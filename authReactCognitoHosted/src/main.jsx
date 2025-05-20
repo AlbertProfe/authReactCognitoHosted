@@ -4,6 +4,8 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { AuthProvider } from "react-oidc-context";
 import "./index.css";
+import { WebStorageStateStore, InMemoryWebStorage } from "oidc-client-ts";
+import { BrowserRouter } from "react-router-dom";
 
 const cognitoAuthConfig = {
   authority:
@@ -13,18 +15,21 @@ const cognitoAuthConfig = {
   response_type: "code",
   scope: "phone openid email",
   prompt: "login", // Force login prompt
-  //automaticSilentRenew: false, // Disable silent renew
+  automaticSilentRenew: false, // Disable silent renew
+  userStore: new WebStorageStateStore({ store: new InMemoryWebStorage() }), // Use in-memory storage
   //silent_redirect_uri: "http://localhost:5173/oidc-silent-renew.html",  // Silent renew URL
-  //post_logout_redirect_uri: "http://localhost:5173/"
+  post_logout_redirect_uri: "http://localhost:5173/"
 };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-// wrap the application with AuthProvider
+// wrap the application with AuthProvider and BrowserRouter
 root.render(
   <React.StrictMode>
-    <AuthProvider {...cognitoAuthConfig}>
-      <App />
-    </AuthProvider>
+    <BrowserRouter>
+      <AuthProvider {...cognitoAuthConfig}>
+        <App />
+      </AuthProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
