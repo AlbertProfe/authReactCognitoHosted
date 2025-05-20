@@ -9,21 +9,11 @@ function App() {
   const signOutRedirect = async () => {
     try {
       await auth.removeUser(); // Clear client-side state
-      navigate("/"); // Show Welcome page immediately
       const clientId = "7kkicfmsl9b0ikcmjf0qos0nc8";
       const logoutUri = "http://localhost:5173/";
       const cognitoDomain =
-        "https://eu-central-1jcmngqrxv.auth.eu-central-1.amazoncognito.com";
-      // Trigger logout in background
-      fetch(
-        `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
-          logoutUri
-        )}`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      ).catch((error) => console.error("Background logout error:", error));
+        "eu-central-1jcmngqrxv.auth.eu-central-1.amazoncognito.com";
+      window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${logoutUri}`;
     } catch (error) {
       console.error("Logout error:", error);
       navigate("/"); // Fallback to Welcome page
@@ -50,7 +40,7 @@ function App() {
         <pre>ID Token: {auth.user?.id_token}</pre>
         <pre>Access Token: {auth.user?.access_token}</pre>
         <pre>Refresh Token: {auth.user?.refresh_token}</pre>
-        <button onClick={signOutRedirect}>Sign out</button>
+        <button onClick={() => signOutRedirect()}>Sign out</button>
       </div>
     );
   }
